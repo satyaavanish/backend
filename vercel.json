@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/get-score", "dest": "/api/get-score.js" },
+    { "src": "/api/post-score", "dest": "/api/post-score.js" }
+  ]
+}
