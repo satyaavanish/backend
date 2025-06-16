@@ -21,34 +21,33 @@ const ScoreSchema = new mongoose.Schema({
 
 const Score = mongoose.models.Score || mongoose.model('Score', ScoreSchema);
 
-// Helper function to set CORS headers
-const setCorsHeaders = (res) => {
+// ✅ Correctly defined CORS header setter
+function setCorsHeaders(req, res) {
   const allowedOrigins = [
     'https://new-game-7g95qeu1x-avanishs-projects-3608432a.vercel.app',
     'https://new-game-dusky.vercel.app',
-    'http://localhost:3000' // for local development
+    'http://localhost:3000'
   ];
-  
+
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // fallback
   }
-  
+
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-};
+}
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  setCorsHeaders(res);
+  setCorsHeaders(req, res);
 
-  // Handle preflight request
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Only allow GET
   if (req.method !== 'GET') {
     return res.status(405).json({ 
       success: false,
@@ -58,7 +57,7 @@ export default async function handler(req, res) {
 
   try {
     await connectDB();
-    
+
     const player = req.query.player;
     if (!player) {
       return res.status(400).json({
@@ -68,7 +67,6 @@ export default async function handler(req, res) {
     }
 
     const score = await Score.findOne({ player });
-    
     return res.status(200).json({ 
       success: true,
       player,
