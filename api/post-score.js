@@ -31,9 +31,11 @@ const allowedOrigins = [
 export default async function handler(req, res) {
   // Set CORS headers dynamically
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+   res.setHeader(
+  'Access-Control-Allow-Origin',
+  allowedOrigins.includes(origin) ? origin : '*'
+);
+
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
